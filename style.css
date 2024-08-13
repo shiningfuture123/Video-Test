@@ -1,0 +1,115 @@
+ * {
+    box-sizing: border-box;
+}
+
+body {
+    text-align: center;
+}
+
+.game-container {
+    display: grid;
+    width: auto;
+    height: 100vh;
+    border: blue solid 1px;
+    grid-template-columns: repeat(4, auto);
+    justify-content: center;
+    align-content: center;
+    gap: 10px;
+}
+
+.game-info-container {
+    display: flex;
+    grid-column: 1/-1;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.card {
+    border: solid red 1px;
+    height: 364px;
+    width: 260px;
+    position: relative;
+    perspective: 1000px;
+    border-radius: 15px;
+}
+
+.card-face {
+    position: absolute; /* it acted as a relative being thats why it was being pushed out because there is both front and back divs inside card */
+    height: 100%;
+    width: 100%;
+    backface-visibility: hidden; /* does not cascade and it more selective so use it on the element itself instead of the parent/container */
+    border-radius: 15px;
+    overflow: hidden; /* does not cascade and is element specific */
+}
+
+.card video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+    /* visibility: hidden; */
+}
+
+.card.matched video {
+    display: block;
+    /* visibility: visible; */
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card.matched img {
+    display: none;
+}
+
+.front {
+    background-color: red;
+    transform: rotateY(180deg);
+    transition: transform 500ms ease-in-out;
+}
+
+.card.visible .front { /* cause we are hovering on the card and not on the inviisble front side needs to be visible or present to be able to hover*/
+    transform: rotateY(0);
+}
+
+.back {
+    background-color: blue;
+    transition: transform 500ms ease-in-out;
+}
+
+.card.visible .back { /* hovering on the card itself will affect the back */
+    transform: rotateY(-180deg);
+}
+
+.overlay-text {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    color: white; /* change later */
+}
+
+.overlay-text.visible {
+    display: flex;
+    flex-direction: column;
+    animation: overlay-grow 500ms linear forwards;
+}
+
+@keyframes overlay-grow {
+    from {
+        background-color: rgba(0, 0, 0, 0);
+        font-size: 0em;
+    }
+    to {
+        background-color: rgba(0, 0, 0, 0.8);
+        font-size: 10em;
+    }
+}
