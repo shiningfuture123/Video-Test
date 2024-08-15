@@ -9,7 +9,7 @@ body {
 .game-container {
     display: grid;
     width: auto;
-    height: 100vh;
+    height: 150vh;
     border: blue solid 1px;
     grid-template-columns: repeat(4, auto);
     justify-content: center;
@@ -25,12 +25,12 @@ body {
 }
 
 .card {
-    border: solid red 1px;
-    height: 364px;
-    width: 260px;
+    height: 175px; /* alter this size */
+    width: 125px; /* alter this size */
     position: relative;
     perspective: 1000px;
     border-radius: 15px;
+    /* add a shadow */
 }
 
 .card-face {
@@ -66,7 +66,7 @@ body {
 }
 
 .front {
-    background-color: red;
+    background-color: black;
     transform: rotateY(180deg);
     transition: transform 500ms ease-in-out;
 }
