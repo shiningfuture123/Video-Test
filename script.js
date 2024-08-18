@@ -24,14 +24,15 @@ class gameController {
         this.getTime.innerText = this.constantTime;
         this.timeRemaining = this.constantTime;
         this.cardToCheck = null;
-        this.busy = null;
+        this.busy = true;
         this.pauseTimer = false;
         this.cardsMatchedArray = [];
         this.numFlips = 0; //resets
-        this.shuffleTheCards();
-        this.startCountdown();
-        //add game delays?
-        
+        setTimeout(() => {
+            this.busy = null;
+            this.shuffleTheCards();
+            this.startCountdown();
+        }, 500);
     }
 
     flipCard(card) {
