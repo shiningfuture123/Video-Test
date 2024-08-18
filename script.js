@@ -61,15 +61,25 @@ class gameController {
         }
     }
 
+    hideCards() {
+        this.cardsArray.forEach(card => {
+            card.classList.remove('visible');
+        });
+    }
+
     //---------------------------------------------------------------------------------------------------------
 
-    gameVictory() {
-        //needs a wait time so when the video ends it will be visible
-        document.getElementById('victory').classList.add('visible');
+    gameVictory(card1) {
+        let duration = card1.getElementsByClassName('video')[0].duration;
+        setTimeout( () => {
+            document.getElementById('victory').classList.add('visible');
+            this.hideCards();
+        }, duration * 1000);
     }
 
     gameOver() {
         document.getElementById('gameover').classList.add('visible');
+        this.hideCards();
     }
 
     //---------------------------------------------------------------------------------------------------------
@@ -96,13 +106,16 @@ class gameController {
         this.busy = true;
         this.pauseTimer = true;
         card1.getElementsByClassName('video')[0].play();
+        card2.getElementsByClassName('video')[0].muted = true; //just to make it sound smoother
         card2.getElementsByClassName('video')[0].play();
         let duration = card1.getElementsByClassName('video')[0].duration;
-        console.log(duration);
         setTimeout( () => { //allows cards to be clicked when video finished and begins countdown again
             this.busy = false;
             this.pauseTimer = false;
             this.startCountdown();
+            card2.getElementsByClassName('video')[0].muted = false; //do I need this? for when it resets during victory/gameOver?
+            card1.getElementsByClassName('card-value')[0].classList.add('visible');
+            card2.getElementsByClassName('card-value')[0].classList.add('visible');
         }, duration * 1000);
     }
 
@@ -113,7 +126,7 @@ class gameController {
         this.cardsMatchedArray.push(card2);
         this.playMatchedVideo(card1, card2);
         if (this.cardsMatchedArray.length === this.cardsArray.length) {
-            this.gameVictory();
+            this.gameVictory(card1);
         }
     }
 
@@ -141,21 +154,22 @@ class gameController {
     }
 }
 
-
 let overlays = Array.from(document.getElementsByClassName('overlay-text'));
 let cards = Array.from(document.getElementsByClassName('card'));
 let videos = Array.from(document.getElementsByClassName('video'));
 let game = new gameController(100, cards);
 
-overlays.forEach(overlay => {
-    overlay.addEventListener('click', () => {
-        overlay.classList.remove('visible');
-        game.startGame();
+document.addEventListener("DOMContentLoaded", () => { //ensure that the content is loaded before executing the click functions
+    overlays.forEach(overlay => {
+        overlay.addEventListener('click', () => {
+            overlay.classList.remove('visible');
+            game.startGame();
+        })
     })
-})
-
-cards.forEach(card => {
-    card.addEventListener('click', () => {
-        game.flipCard(card);
-    })
+    
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
+            game.flipCard(card);
+        })
+    });
 });
