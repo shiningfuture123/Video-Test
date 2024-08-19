@@ -2,12 +2,16 @@ class audioController {
     constructor() {
         this.flipSound = new Audio('Assets/Audio/Flip.mp3');
         this.matchedSoundPLACEHOLDER = new Audio('Assets/Audio/placeholderMatched.mp3'); //change
+        this.skipSoundPLACEHOLDER = new Audio('Assets/Audio/placeholderSkip.mp3')
     }
     matchedPLACEHOLDER() {
         this.matchedSoundPLACEHOLDER.play(); //change
     }
     playFlipSound() {
         this.flipSound.play(); //adjust audio volume?
+    }
+    skipPLACEHOLDER() {
+        this.skipSoundPLACEHOLDER.play();
     }
 }
 
@@ -16,6 +20,10 @@ class gameController {
         this.constantTime = totalTime;
         this.getTime = document.getElementById('time-remaining')
         this.getFlips = document.getElementById('flips');
+        this.getSkip = document.getElementsByClassName('skip')[0];
+        this.timeOut;
+        this.skip = this.createSkipReference(); //when initialized makes a single reference that remains unchange until its updated
+        //seen in the skipVideo() when it is first called
         this.cardsArray = cards;
         this.music = new audioController();
     }
@@ -30,6 +38,7 @@ class gameController {
         this.numFlips = 0; //resets
         setTimeout(() => {
             this.busy = null;
+            this.getSkip.disabled = true;
             this.shuffleTheCards();
             this.startCountdown();
         }, 500);
@@ -110,7 +119,10 @@ class gameController {
         card2.getElementsByClassName('video')[0].muted = true; //just to make it sound smoother
         card2.getElementsByClassName('video')[0].play();
         let duration = card1.getElementsByClassName('video')[0].duration;
-        setTimeout( () => { //allows cards to be clicked when video finished and begins countdown again
+        this.getSkip.disabled = false;
+        this.skipVideo(card1, card2);
+        this.timeOut = setTimeout( () => { //allows cards to be clicked when video finished and begins countdown again
+            this.getSkip.disabled = true;
             this.busy = false;
             this.pauseTimer = false;
             this.startCountdown();
@@ -118,6 +130,31 @@ class gameController {
             card1.getElementsByClassName('card-value')[0].classList.add('visible');
             card2.getElementsByClassName('card-value')[0].classList.add('visible');
         }, duration * 1000);
+    }
+
+    createSkipReference(card1, card2) {
+        return () => {
+            this.music.skipPLACEHOLDER();
+            this.getSkip.disabled = true;
+            clearTimeout(this.timeOut);
+            card1.getElementsByClassName('video')[0].pause();
+            card2.getElementsByClassName('video')[0].pause();
+            this.busy = false;
+            this.pauseTimer = false;
+            this.startCountdown();
+            card2.getElementsByClassName('video')[0].muted = false; //do I need this? for when it resets during victory/gameOver?
+            card1.getElementsByClassName('card-value')[0].classList.add('visible');
+            card2.getElementsByClassName('card-value')[0].classList.add('visible');
+        };
+    }
+
+    skipVideo(card1, card2) {
+        this.getSkip.removeEventListener('click', this.skip); //nothing to skip does nothing
+        //next: this.skip is now the added Event Listener previously and address is still the same so its identical and can be removed
+
+        this.skip = this.createSkipReference(card1, card2);//updates skip address with reference code
+
+        this.getSkip.addEventListener('click', this.skip);//creates event listener based on skip address above it ^^^
     }
 
     cardsMatched(card1, card2) {

@@ -9,7 +9,7 @@ body {
 .game-container {
     display: grid;
     width: auto;
-    height: 100vh;
+    height: 910px;
     border: blue solid 1px;
     grid-template-columns: repeat(4, auto);
     grid-template-rows: auto;
