@@ -134,7 +134,6 @@ class gameController {
 
     createSkipReference(card1, card2) {
         return () => {
-            console.log("Herrow")
             this.music.skipPLACEHOLDER();
             this.getSkip.disabled = true;
             clearTimeout(this.timeOut);
