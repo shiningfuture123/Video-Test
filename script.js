@@ -81,7 +81,7 @@ class gameController {
 
     gameVictory(card1) {
         let duration = card1.getElementsByClassName('video')[0].duration;
-        setTimeout( () => {
+        this.victoryTimeOut = setTimeout( () => {
             document.getElementById('victory').classList.add('visible');
             this.hideCards();
         }, duration * 1000);
@@ -134,6 +134,7 @@ class gameController {
 
     createSkipReference(card1, card2) {
         return () => {
+            console.log("Herrow")
             this.music.skipPLACEHOLDER();
             this.getSkip.disabled = true;
             clearTimeout(this.timeOut);
@@ -145,6 +146,11 @@ class gameController {
             card2.getElementsByClassName('video')[0].muted = false; //do I need this? for when it resets during victory/gameOver?
             card1.getElementsByClassName('card-value')[0].classList.add('visible');
             card2.getElementsByClassName('card-value')[0].classList.add('visible');
+            if (this.cardsMatchedArray.length === this.cardsArray.length) {
+                clearTimeout(this.victoryTimeOut );
+                document.getElementById('victory').classList.add('visible');
+                this.hideCards();
+            }
         };
     }
 
